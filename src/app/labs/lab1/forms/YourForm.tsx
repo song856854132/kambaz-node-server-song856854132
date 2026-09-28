@@ -8,8 +8,8 @@ export default function YourForm() {
         <input
           id="wd-your-form-first-name"
           type="text"
-          placeholder="Jane"
-          defaultValue="Jane"
+          placeholder="First name"
+          defaultValue="Hung-Ju"
         />
       </div>
 
@@ -18,8 +18,8 @@ export default function YourForm() {
         <input
           id="wd-your-form-last-name"
           type="text"
-          placeholder="Doe"
-          defaultValue="Doe"
+          placeholder="Last name"
+          defaultValue="Lin"
         />
       </div>
 
@@ -61,7 +61,7 @@ export default function YourForm() {
           Freshman
         </label>
         <label>
-          <input type="radio" name="class-standing" value="sophomore" defaultChecked />
+          <input type="radio" name="class-standing" value="sophomore" />
           Sophomore
         </label>
         <label>
@@ -73,7 +73,7 @@ export default function YourForm() {
           Senior
         </label>
         <label>
-          <input type="radio" name="class-standing" value="graduate" />
+          <input type="radio" name="class-standing" value="graduate" defaultChecked />
           Graduate
         </label>
       </div>

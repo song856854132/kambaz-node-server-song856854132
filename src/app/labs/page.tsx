@@ -4,6 +4,16 @@ export default function Labs() {
   return (
     <div id="wd-labs">
       <h1>Labs</h1>
+      <h2 id="wd-student-name">Hung-Ju Lin</h2>
+      <p id="wd-student-section">CS5610 Web Development, Section 02</p>
+      <a
+        id="wd-github"
+        href="https://github.com/song856854132/kambaz-node-server-song856854132"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        GitHub repository
+      </a>
       <ul>
         <li>
           <Link href="/labs/lab1">Lab 1: HTML Examples</Link>
