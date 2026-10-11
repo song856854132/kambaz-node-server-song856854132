@@ -26,6 +26,12 @@ export default function Dashboard() {
       subtitle: "Sounds like earning a lot of money",
       image: "/images/husky4.jpg",
     },
+    {
+      id: "CS9999",
+      title: "CS9999 Sample Course",
+      subtitle: "Assistant-generated sample — not my course",
+      image: "/images/reactjs.jpg",
+    },
   ];
 
   return (
@@ -34,7 +40,10 @@ export default function Dashboard() {
       <hr />
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
       <hr />
-      <div id="wd-dashboard-courses" className="wd-dashboard-grid">
+      <div
+        id="wd-dashboard-courses"
+        className="wd-dashboard-grid grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+      >
         {courses.map((course) => (
           <CourseCard
             key={course.id}

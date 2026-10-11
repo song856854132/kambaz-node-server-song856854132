@@ -7,3 +7,9 @@ husky3.jpg  "Juvenile Siberian Husky.jpg" by MrPanyGoff, CC BY-SA 3.0
             https://commons.wikimedia.org/wiki/File:Juvenile_Siberian_Husky.jpg
 husky4.jpg  "Siberian Husky in the city of ilulissat" by Buiobuione, CC BY-SA 4.0
             https://commons.wikimedia.org/wiki/File:Siberian_Husky_in_the_city_of_ilulissat_buiobuione.jpg
+
+Logos (Wikimedia Commons, public domain, trademarked):
+reactjs.jpg "React-icon.svg" on a #20232a background
+            https://commons.wikimedia.org/wiki/File:React-icon.svg
+NEU.png     "Northeastern Huskies shield logo.jpg", resized to 150px
+            https://commons.wikimedia.org/wiki/File:Northeastern_Huskies_shield_logo.jpg
