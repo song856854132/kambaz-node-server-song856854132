@@ -1,39 +1,8 @@
 import CourseCard from "./CourseCard";
+import * as db from "../database";
 
 export default function Dashboard() {
-  const courses = [
-    {
-      id: "cs5010",
-      title: "CS5010 Programming Design Paradigms",
-      subtitle: "Course with tons of homework",
-      image: "/images/husky1.jpg",
-    },
-    {
-      id: "cs5610",
-      title: "CS5610 Web Development",
-      subtitle: "Need to handcraft HTML",
-      image: "/images/husky2.jpg",
-    },
-    {
-      id: "cs5800",
-      title: "CS 5800 Algorithms",
-      subtitle: "Try to solve complex problems, but biggest problem is understanding the algorithm.",
-      image: "/images/husky3.jpg",
-    },
-    {
-      id: "cs6140",
-      title: "CS 6140 Machine Learning",
-      subtitle: "Sounds like earning a lot of money",
-      image: "/images/husky4.jpg",
-    },
-    {
-      id: "CS9999",
-      title: "CS9999 Sample Course",
-      subtitle: "Assistant-generated sample — not my course",
-      image: "/images/reactjs.jpg",
-    },
-  ];
-
+  const courses = db.courses;
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
@@ -42,16 +11,10 @@ export default function Dashboard() {
       <hr />
       <div
         id="wd-dashboard-courses"
-        className="wd-dashboard-grid grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+        className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
       >
         {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            id={course.id}
-            title={course.title}
-            subtitle={course.subtitle}
-            image={course.image}
-          />
+          <CourseCard key={course._id} {...course} />
         ))}
       </div>
     </div>

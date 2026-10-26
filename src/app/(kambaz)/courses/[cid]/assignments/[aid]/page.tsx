@@ -1,4 +1,5 @@
 import Link from "next/link";
+import * as db from "../../../../database";
 
 const label = "mb-1 block text-sm font-medium";
 const field = "w-full rounded border border-neutral-300 px-3 py-2 font-sans";
@@ -8,14 +9,18 @@ export default async function AssignmentEditor({
 }: {
   params: Promise<{ cid: string; aid: string }>;
 }) {
-  const { cid } = await params;
+  const { cid, aid } = await params;
+  const assignment = db.assignments.find((a) => a._id === aid);
   return (
     <div id="wd-assignments-editor" className="max-w-3xl">
       <div className="mb-4">
         <label htmlFor="wd-name" className={label}>
           Assignment Name
         </label>
-        <input id="wd-name" defaultValue="A1 - ENV + HTML" className={field} />
+        <input id="wd-name" defaultValue={assignment?.title ?? ""} className={field} />
+        <p id="wd-assignment-id" className="mt-1 text-sm text-neutral-600">
+          Assignment id: {aid}
+        </p>
       </div>
       <div className="mb-4">
         <label htmlFor="wd-description" className={label}>
@@ -24,7 +29,7 @@ export default async function AssignmentEditor({
         <textarea
           id="wd-description"
           rows={5}
-          defaultValue="The assignment is available online Submit a link to the landing page of"
+          defaultValue={assignment?.description ?? ""}
           className={field}
         />
       </div>
@@ -32,7 +37,7 @@ export default async function AssignmentEditor({
         <label htmlFor="wd-points" className={label}>
           Points
         </label>
-        <input id="wd-points" defaultValue={100} className={field} />
+        <input id="wd-points" defaultValue={assignment?.points ?? 100} className={field} />
       </div>
       {/* Complete on your own — see checklist below */}
       <div className="mb-4">
@@ -106,14 +111,14 @@ export default async function AssignmentEditor({
             <label htmlFor="wd-due-date" className={label}>
               Due
             </label>
-            <input type="date" id="wd-due-date" defaultValue="2026-09-22" className={field} />
+            <input type="date" id="wd-due-date" defaultValue={assignment?.due} className={field} />
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label htmlFor="wd-available-from" className={label}>
                 Available from
               </label>
-              <input type="date" id="wd-available-from" defaultValue="2026-09-08" className={field} />
+              <input type="date" id="wd-available-from" defaultValue={assignment?.available} className={field} />
             </div>
             <div>
               <label htmlFor="wd-available-until" className={label}>
