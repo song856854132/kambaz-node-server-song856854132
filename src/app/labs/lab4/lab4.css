@@ -1,0 +1,4 @@
+/* Tailwind theme and utilities only (no Preflight), same as kambaz.css,
+   so the Lab 4 buttons are styled without resetting the other labs */
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
