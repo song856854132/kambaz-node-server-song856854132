@@ -14,6 +14,24 @@ export default function Labs() {
       >
         GitHub repository
       </a>
+      <br />
+      <a
+        id="wd-server-github"
+        href="https://github.com/song856854132/webdev-server"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Node server GitHub repository
+      </a>
+      <br />
+      <a
+        id="wd-server-url"
+        href={process.env.NEXT_PUBLIC_HTTP_SERVER}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Node server (deployed)
+      </a>
       <ul>
         <li>
           <Link href="/labs/lab1">Lab 1: HTML Examples</Link>

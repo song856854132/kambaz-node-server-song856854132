@@ -1,9 +1,15 @@
 import Lesson from "./Lesson";
 import ModuleControlButtons from "./ModuleControlButtons";
+import * as client from "../../client";
 import { useModulesStore, type CourseModule } from "../../../store/modulesStore";
 
 export default function Module({ module }: { module: CourseModule }) {
   const updateModule = useModulesStore((state) => state.updateModule);
+  // Typing only changes the cache; Enter saves the new name on the server
+  const onUpdateModule = async (name: string) => {
+    const saved = await client.updateModule({ ...module, name, editing: false });
+    updateModule({ ...saved, editing: false });
+  };
   return (
     <li className="wd-module mb-5 overflow-hidden border border-neutral-400 p-0 text-xl">
       <div className="wd-title flex items-center justify-between bg-neutral-200 p-3 ps-2">
@@ -14,7 +20,7 @@ export default function Module({ module }: { module: CourseModule }) {
             onChange={(e) => updateModule({ ...module, name: e.target.value })}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                updateModule({ ...module, editing: false });
+                onUpdateModule(e.currentTarget.value);
               }
             }}
             aria-label="Module name"

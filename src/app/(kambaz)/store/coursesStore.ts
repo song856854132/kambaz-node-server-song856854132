@@ -1,6 +1,5 @@
 "use client";
 import { create } from "zustand";
-import coursesJson from "../database/courses.json";
 // courses.json rows don't all carry every field (RS104 has no number or dates),
 // so the optional ones are spelled out instead of inferred from the JSON
 export type Course = {
@@ -26,19 +25,22 @@ const emptyCourse: Course = {
   description: "New Description",
   image: "/images/reactjs.jpg",
 };
+// Ch. 5: Express owns the courses. This store is only a client cache that
+// the screens fill with what the server returns.
 type CoursesStore = {
   courses: Course[];
+  setCourses: (courses: Course[]) => void;
   addCourse: (course: Course) => Course;
   deleteCourse: (courseId: string) => void;
   updateCourse: (course: Course) => void;
 };
 export const useCoursesStore = create<CoursesStore>((set) => ({
-  courses: coursesJson as Course[],
-  // Returns the stored copy so the Dashboard can enroll its creator
+  courses: [],
+  setCourses: (courses) => set({ courses }),
+  // The server already assigned _id, so the course is appended as-is
   addCourse: (course) => {
-    const newCourse = { ...emptyCourse, ...course, _id: crypto.randomUUID() };
-    set((state) => ({ courses: [...state.courses, newCourse] }));
-    return newCourse;
+    set((state) => ({ courses: [...state.courses, course] }));
+    return course;
   },
   deleteCourse: (courseId) =>
     set((state) => ({

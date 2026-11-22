@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import AssignmentItem from "./AssignmentItem";
+import * as client from "../../client";
 import { useAssignmentsStore } from "../../../store/assignmentsStore";
 
 export default function Assignments() {
@@ -12,7 +13,18 @@ export default function Assignments() {
   const assignments = useAssignmentsStore((state) => state.assignments).filter(
     (assignment) => assignment.course === courseId,
   );
+  const setAssignments = useAssignmentsStore((state) => state.setAssignments);
   const deleteAssignment = useAssignmentsStore((state) => state.deleteAssignment);
+  useEffect(() => {
+    client
+      .findAssignmentsForCourse(courseId)
+      .then(setAssignments)
+      .catch(() => setAssignments([]));
+  }, [courseId, setAssignments]);
+  const onDeleteAssignment = async (assignmentId: string) => {
+    await client.deleteAssignment(assignmentId);
+    deleteAssignment(assignmentId);
+  };
   // Id of the row waiting for a Yes / No answer; null when no dialog is open
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const pendingTitle = assignments.find((a) => a._id === pendingDelete)?.title;
@@ -95,8 +107,8 @@ export default function Assignments() {
               <button
                 type="button"
                 id="wd-delete-assignment-yes"
-                onClick={() => {
-                  deleteAssignment(pendingDelete);
+                onClick={async () => {
+                  await onDeleteAssignment(pendingDelete);
                   setPendingDelete(null);
                 }}
                 className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white"

@@ -1,32 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
-import * as db from "../../../../database";
-import { useEnrollmentsStore } from "../../../../store/enrollmentsStore";
+import * as client from "../../../client";
+import * as accountClient from "../../../../account/client";
 import { emptyUser, type User } from "../../../../account/AccountContext";
 
 export default function PeopleTable() {
   const { cid } = useParams();
   const courseId = String(cid);
-  const enrollments = useEnrollmentsStore((state) => state.enrollments);
-  const enroll = useEnrollmentsStore((state) => state.enroll);
-  const unenroll = useEnrollmentsStore((state) => state.unenroll);
-  // People added here only live for this session, like the stores
-  const [users, setUsers] = useState<User[]>(db.users);
+  // Roster from GET /api/courses/:cid/users (users with an enrollment row)
+  const [enrolled, setEnrolled] = useState<User[]>([]);
   const [draft, setDraft] = useState<User>(emptyUser);
-  // Keep only users with an enrollment row for this course
-  const enrolled = users.filter((usr) =>
-    enrollments.some(
-      (enrollment) => enrollment.user === usr._id && enrollment.course === courseId,
-    ),
-  );
-  const addPerson = () => {
+  const loadRoster = async () => {
+    setEnrolled(await client.findUsersForCourse(courseId));
+  };
+  useEffect(() => {
+    loadRoster().catch(() => setEnrolled([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reload per course
+  }, [courseId]);
+  const addPerson = async () => {
     if (!draft.firstName && !draft.lastName) return;
-    const person = { ...draft, _id: crypto.randomUUID() };
-    setUsers([...users, person]);
-    enroll(person._id, courseId);
+    // Usernames must be unique on the server, so build one from the name
+    const { _id, ...person } = draft;
+    const username = `${draft.firstName}${draft.lastName}`.toLowerCase().replace(/\s+/g, "");
+    const created = await accountClient.createUser({
+      ...person,
+      username: `${username || "user"}-${Date.now()}`,
+    });
+    await client.enrollIntoCourse(created._id, courseId);
     setDraft(emptyUser);
+    await loadRoster();
+  };
+  const unenroll = async (userId: string) => {
+    await client.unenrollFromCourse(userId, courseId);
+    await loadRoster();
   };
   return (
     <div id="wd-people-table" className="overflow-x-auto">
@@ -93,7 +101,7 @@ export default function PeopleTable() {
                 <button
                   type="button"
                   className="wd-unenroll-person rounded bg-red-600 px-2 py-0.5 text-xs text-white"
-                  onClick={() => unenroll(user._id, courseId)}
+                  onClick={() => unenroll(user._id)}
                 >
                   Unenroll
                 </button>

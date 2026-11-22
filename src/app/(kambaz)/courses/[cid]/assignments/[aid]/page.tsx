@@ -1,10 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import * as client from "../../../client";
 import {
   emptyAssignment,
   useAssignmentsStore,
+  type Assignment,
 } from "../../../../store/assignmentsStore";
 
 const label = "mb-1 block text-sm font-medium";
@@ -18,22 +20,45 @@ export default function AssignmentEditor() {
   const existing = useAssignmentsStore((state) =>
     state.assignments.find((a) => a._id === assignmentId),
   );
+  const setAssignments = useAssignmentsStore((state) => state.setAssignments);
   const addAssignment = useAssignmentsStore((state) => state.addAssignment);
   const updateAssignment = useAssignmentsStore((state) => state.updateAssignment);
   // /assignments/new opens a blank draft; any other aid edits that row
   const isNew = assignmentId === "new";
-  const [draft, setDraft] = useState(
-    existing ?? { ...emptyAssignment, _id: assignmentId, course: courseId },
+  const blank: Assignment = { ...emptyAssignment, _id: assignmentId, course: courseId };
+  // Opening /assignments/A101 directly: the cache is empty until the server answers
+  const [draft, setDraft] = useState<Assignment | null>(
+    existing ?? (isNew ? blank : null),
   );
+  useEffect(() => {
+    if (draft) return;
+    client
+      .findAssignmentsForCourse(courseId)
+      .then((list: Assignment[]) => {
+        setAssignments(list);
+        setDraft(list.find((a) => a._id === assignmentId) ?? blank);
+      })
+      .catch(() => setDraft(blank));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- load once per id
+  }, [courseId, assignmentId]);
   const listUrl = `/courses/${courseId}/assignments`;
-  const save = () => {
+  const save = async () => {
+    if (!draft) return;
     if (isNew) {
-      addAssignment({ ...draft, course: courseId });
+      // The server assigns the real _id
+      const { _id, ...newAssignment } = draft;
+      const created = await client.createAssignmentForCourse(courseId, {
+        ...newAssignment,
+        course: courseId,
+      });
+      addAssignment(created);
     } else {
-      updateAssignment(draft);
+      const saved = await client.updateAssignment(draft);
+      updateAssignment(saved);
     }
     router.push(listUrl);
   };
+  if (!draft) return null;
   return (
     <div id="wd-assignments-editor" className="max-w-3xl">
       <div className="mb-4">
