@@ -38,9 +38,6 @@ export default function PathParameters() {
       <div className="mt-2">
         <p>Click the buttons above to see the results of the operations.</p>
       </div>
-      <div className="mt-2">
-        <p>Note: The multiply and divide operations are not implemented on the server.</p>
-      </div>
       <hr />
     </div>
   );
